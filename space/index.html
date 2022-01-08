@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>p5.js test</title>
   <script src="p5.min.js"></script>
+  <!-- <script src="p5.sound.min.js"></script> -->
 
     <!-- <script src="p5.js"></script> -->
     <!-- <script src="p5.sound.js"></script> -->
@@ -22,6 +23,7 @@ let alpha, theta=0;
 
 let osc, playing, freq, amp;
 
+let UFO;
 let f = [10, 10, 8, 12, 10, 8, 8, 10];
 let s = [6, 6, 8, 10, 7, 5, 8, 6];
 let b = [30, 50, 60, 120, 100, 80, 40, 50];
@@ -42,17 +44,16 @@ function preload() {
   fallingStone = loadImage('./fallingStone.png');
   bigBluePlanet = loadImage('./bigBluePlanet.png');
   bigPurplePlanet = loadImage('./bigPurplePlanet.png');
-  bgSound = loadSound('./cosmic-glow-6703.mp3')
-
+  UFO = loadImage('./UFO.png');
   // img = loadImage('https://i.imgur.com/6u8pqCL.png');
-//   star = loadImage('https://i.imgur.com/GPYthIN.png');
-//   planet1 = loadImage('https://i.imgur.com/YZcdld5.png');
-//   planet2 = loadImage('https://i.imgur.com/8TeR9WK.png');
-//   littlePlanet2 = loadImage('https://i.imgur.com/xBlfiRK.png');
-//   starGlow = loadImage('https://i.imgur.com/nekpZCK.png');
-//   fallingStone = loadImage('https://i.imgur.com/0veikNf.png');
+  // star = loadImage('https://i.imgur.com/GPYthIN.png');
+  // planet1 = loadImage('https://i.imgur.com/YZcdld5.png');
+  // planet2 = loadImage('https://i.imgur.com/8TeR9WK.png');
+  // littlePlanet2 = loadImage('https://i.imgur.com/xBlfiRK.png');
+  // starGlow = loadImage('https://i.imgur.com/nekpZCK.png');
+  // fallingStone = loadImage('https://i.imgur.com/0veikNf.png');
 
-//   bgSound = loadSound('https://drive.google.com/file/d/1B09lDoBvzSeVXK4iUUC7QyQj4AMpjaIW/view?usp=sharing')
+  bgSound = loadSound('./cosmic-glow-v6.mp3')
 }
 
 function setup() {
@@ -67,7 +68,7 @@ function setup() {
   // osc4 = new p5.Oscillator('square');
   nStart = new p5.Vector(random(100), random(100), random(100));
   bgSound.setVolume(0.4);
-  bgSound.play();
+  bgSound.loop();
 }
 
 function draw() {
@@ -137,8 +138,13 @@ function draw() {
     
       
   if (mouseIsPressed) {
-    cursor('https://avatars0.githubusercontent.com/u/1617169?s=16');
-    ellipse(mouseX, mouseY, 50, 50);
+    noCursor();
+    if (mouseX < 345) {
+      image(UFO,mouseX, mouseY, random(40,45), random(40,45));
+    }
+    else{
+    image(UFO,mouseX, mouseY, random(30,45),  random(30,45));
+    }
     theta += map(mouseX, 0, 650 ,-0.5, 2) ;
   } else {
     theta += 0.25 ;
