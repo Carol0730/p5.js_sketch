@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>p5.js test</title>
+  <script src="p5.min.js"></script>
+
+    <!-- <script src="p5.js"></script> -->
+    <!-- <script src="p5.sound.js"></script> -->
+    <!-- <script src="sketch.js"></script> -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js" integrity="sha512-WzkwpdWEMAY/W8WvP9KS2/VI6zkgejR4/KTxTl4qHx0utqeyVE0JY+S1DlMuxDChC7x0oXtk/ESji6a0lP/Tdg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+  <script>
+
+p5.disableFriendlyErrors = true;
+
+let alpha, theta=0;
+
+let osc, playing, freq, amp;
+
+let f = [10, 10, 8, 12, 10, 8, 8, 10];
+let s = [6, 6, 8, 10, 7, 5, 8, 6];
+let b = [30, 50, 60, 120, 100, 80, 40, 50];
+let xPosition = [275, 285, 250, 280, 285, 265, 240, 286];
+let yPosition = [465, 470, 452, 450, 472, 460, 462, 450];
+
+let nStart;
+
+let bgSound;
+
+function preload() {
+  img = loadImage('./spaceBG.png');
+  star = loadImage('./star.png');
+  planet1 = loadImage('./planet1.png');
+  planet2 = loadImage('./planet2.png');
+  littlePlanet2 = loadImage('./littlePlanet2.png');
+  starGlow = loadImage('./starGlow.png');
+  fallingStone = loadImage('./fallingStone.png');
+  bigBluePlanet = loadImage('./bigBluePlanet.png');
+  bigPurplePlanet = loadImage('./bigPurplePlanet.png');
+  bgSound = loadSound('./cosmic-glow-6703.mp3')
+
+  // img = loadImage('https://i.imgur.com/6u8pqCL.png');
+//   star = loadImage('https://i.imgur.com/GPYthIN.png');
+//   planet1 = loadImage('https://i.imgur.com/YZcdld5.png');
+//   planet2 = loadImage('https://i.imgur.com/8TeR9WK.png');
+//   littlePlanet2 = loadImage('https://i.imgur.com/xBlfiRK.png');
+//   starGlow = loadImage('https://i.imgur.com/nekpZCK.png');
+//   fallingStone = loadImage('https://i.imgur.com/0veikNf.png');
+
+//   bgSound = loadSound('https://drive.google.com/file/d/1B09lDoBvzSeVXK4iUUC7QyQj4AMpjaIW/view?usp=sharing')
+}
+
+function setup() {
+  let cnv = createCanvas(850, 650);
+  frameRate(10);
+  cnv.mousePressed(playOscillator);
+  osc = new p5.Oscillator('sine');
+  osc2 = new p5.Oscillator('sine');
+  osc3 = new p5.Oscillator('sine');
+  // osc2 = new p5.Oscillator('triangle');
+  // osc3 = new p5.Oscillator('sawtooth');
+  // osc4 = new p5.Oscillator('square');
+  nStart = new p5.Vector(random(100), random(100), random(100));
+  bgSound.setVolume(0.4);
+  bgSound.play();
+}
+
+function draw() {
+  background(img);
+
+  freq = constrain(map(mouseX, 0, width, 100, 200), 120, 300);
+  amp = constrain(map(mouseY, height, 0, 0.1, 0.3), 0.1, 0.3);
+
+  if (playing) {
+    osc.freq(freq, 0.1);
+    osc.amp(amp, 0.1);
+
+    osc2.freq(freq+40, 0.1);
+    osc2.amp(amp, 0.1);
+
+    osc3.freq(freq+80, 0.1);
+    osc3.amp(amp, 0.1);
+
+    // osc4.freq(freq/3, 0.1);
+    // osc4.amp(amp, 0.1);
+  }
+
+    cursor('grab');
+    alpha = map(sin(theta),-1,1,100,255);
+    tint(255, alpha);
+    image(star, 50, 50, 60, 60);
+    image(star, 125, 100, 30, 30);
+    image(starGlow, 100, 350, 65, 50);
+
+    tint(255, 255);
+    push();
+    translate(230, 230);
+    rotate(theta);
+    image(planet1, -75, -75, 150, 150);
+    pop();
+
+    image(planet2, 600, 450, 150, 150);
+    push();
+    translate(675, 525);
+    rotate(theta/2);
+    image(littlePlanet2, 40, 40, 20, 20);
+    pop();
+
+    push();
+    translate(-alpha/50,alpha/50)
+    image(fallingStone, 80, 450, 200, 130)
+    for (let i = 0 ; i < 7 ; i++ ){
+      const percent = (theta * 50 + 15 * i) % 100;
+      fill(234, 208, 144, map(percent, 0, 100, 255, 0));
+      noStroke();
+      ellipse(xPosition[i] + map(percent, 0, 100, 0, 60), yPosition[i] - map(percent, 0, 100, 0, 20) , f[i]);
+    }
+    image(fallingStone, 240, 520, 100, 75)
+    for (let i = 0 ; i < 6 ; i++ ){
+      const percent = (theta * 50 + 15 * i) % 100;
+      fill(234, 208, 144, map(percent, 0, 100, 255, 0));
+      noStroke();
+      ellipse(xPosition[i] + map(percent, 0, 100, 0, 40) + 80, yPosition[i] - map(percent, 0, 100, 0, 40) +50 , s[i]);
+    }
+    pop();
+
+    push();
+    translate(800, 60);
+    rotate(theta/15);
+    image(bigPurplePlanet,-200, -200, 400, 400);
+    pop();
+    
+      
+  if (mouseIsPressed) {
+    cursor('https://avatars0.githubusercontent.com/u/1617169?s=16');
+    ellipse(mouseX, mouseY, 50, 50);
+    theta += map(mouseX, 0, 650 ,-0.5, 2) ;
+  } else {
+    theta += 0.25 ;
+  }
+
+}
+
+
+function playOscillator() {
+    osc.start();
+    osc2.start();
+    osc3.start();
+    // osc4.start();
+    playing = true;
+}
+
+function mouseReleased() {
+  
+  osc.amp(0, 0.5);
+  osc2.amp(0, 0.5);
+  osc3.amp(0, 0.5);
+  // osc4.amp(0, 0.5);
+  playing = false;
+
+}
+
+  </script>
+</body>
+</html>
