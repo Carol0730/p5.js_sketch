@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>p5.js test</title>
+  <script src="p5.min.js"></script>
+  <!-- <script src="p5.sound.min.js"></script> -->
+
+  <!-- <script src="p5.js"></script> -->
+  <!-- <script src="p5.sound.js"></script> -->
+  <!-- <script src="sketch.js"></script> -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js" integrity="sha512-WzkwpdWEMAY/W8WvP9KS2/VI6zkgejR4/KTxTl4qHx0utqeyVE0JY+S1DlMuxDChC7x0oXtk/ESji6a0lP/Tdg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+  <script>
+    let xPosition = [80, 210, 40, 700, 800];
+    let yPosition = [60, 100, 200, 140, 125];
+    let starSize = [10, 8, 12, 6, 10, 7, 11, 8];
+    let finalSizes = [10, 8, 12, 6, 10, 7, 11, 8];
+    
+
+    let things = [];
+    let index = 0;
+
+    let paintedThings = [];
+    let size = 40;
+    
+    let bgSound;
+
+
+    function preload() {
+      img = loadImage('./natureBG.png');
+      fisher = loadImage('./fisher.png');
+
+      fish = loadImage('./fish.png');
+      tree = loadImage('./tree.png');
+      cloud = loadImage('./cloud.png');
+      things = [fish, tree, cloud];
+
+      bgSound = loadSound('./too-long-on-my-own-v2.mp3');
+      click = loadSound('./click.mp3');
+    }
+
+    function setup() {
+      bgSound.setVolume(0.3);
+      bgSound.loop();
+      noCursor();
+      let cnv = createCanvas(850, 650);
+      // frameRate(5);
+
+    }
+
+    function draw() {
+      background(img); 
+
+      noStroke();
+      fill(255);
+      for (let i = 0 ; i < 5 ; i++ ){
+        if (frameCount % 10 === 0) {
+          finalSizes[i] = starSize[i]+random(0,5);
+        }
+        ellipse(xPosition[i], yPosition[i], finalSizes[i]);
+
+      };
+      
+      image(fisher, 450, 450, 160, 160);
+      
+
+      for (let i = 0; i < paintedThings.length; ++i) {
+        const paintedThing = paintedThings[i];
+        image(things[paintedThing.index], paintedThing.x, paintedThing.y, paintedThing.size, paintedThing.size);
+        // image(things[index], mouseX, mouseY, paintedThing.size, paintedThing.size);
+      }
+
+      image(things[index], mouseX-size/2, mouseY-size/2, size, size);
+
+
+      let panning = map(Math.max(0, Math.min(mouseX, 850)), 0, 850, -1, 1);
+      bgSound.pan(panning);
+      click.pan(panning);
+      // bgSound.setVolume(volumee);
+
+    }
+
+    
+
+    function mousePressed () {
+      paintedThings.push({
+        x: mouseX - size / 2,
+        y: mouseY - size / 2,
+        index: index,
+        size
+      })
+
+      size = random(10, 100);
+      
+      index = index +1 ;
+
+      if (index == 3 ){
+        index = 0;
+      }
+
+      // things.push({
+      //   x: mouseX,
+      //   y: mouseY,
+      //   typeIndex: currentTypeIndex
+      // })
+
+      click.play();
+    }
+
+
+  </script>
+</body>
+</html>
